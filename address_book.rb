@@ -21,20 +21,29 @@ class AddressBook
     end
   end
 
+  def edit
+    File.open("contacts.yml", 'w') do |file|
+      YAML.dump(edit_yml, file)
+    end
+  end
 
   def run
     loop do
       puts "Address Book"
       puts "a: Add Contact"
       puts "p: Print Address Book"
+      puts "e: Edit a contact"
       puts "d: Delete a contact"
       puts "s: Search"
-      puts "e: Exit"
+      puts "x: Exit"
       print "Enter your choice: "
       input = gets.chomp.downcase
       case input
       when 'a'
         add_contact
+      when 'e'
+        edit_contact
+        save()
       when 'p'
         print_contact_list
       when 's'
@@ -45,7 +54,8 @@ class AddressBook
         find_by_address(search)
       when 'd'
         delete_contact
-      when 'e'
+        save()
+      when 'x'
         save()
         break
       end
@@ -53,34 +63,65 @@ class AddressBook
     end
   end
 
-  def delete_contact
-     index = 0
-     if contacts.empty?
-       puts "There are no contacts in your address book. \n"
-     else
-       print "Would you like to remove a contact based on first or last name? (first/last) "
-       nameType = gets.chomp.downcase
-       print "What is the name you would like to remove? "
-       nameRemove = gets.chomp.downcase
-           case nameType
-             when "first"
-                 contacts.each do |contact|
-                   if contact.first_name.downcase.include?(nameRemove)
-                     check_name(contact, index)
-                     index += 1
-                    end
-                   end
-             when "last"
-                 contacts.each do |contact|
-                   if contact.last_name.downcase.include?(nameRemove)
-                      check_name(contact, index)
-                     index += 1
-                   end
-                 end
-               else
-                 puts "You did not enter first or last as a choice."
+  def edit_contact
+    index = 0
+    if contacts.empty?
+      print "Sorry there is not contact in your address book!\n"
+    else
+      print "Chose a contact to edit based on first or last name ? (first/last) \n"
+      edit_type = gets.chomp.downcase
+      print " Chose the name you want to edit: \n"
+      edit_contact = gets.chomp.downcase
+      case edit_type
+        when 'first'
+          contacts.each do |contact|
+             if contact.first_name.downcase.include?(edit_contact)
+               check_edit_name(contact, index)
+               index += 1
             end
-       end
+          end
+        when 'last'
+          contacts.each do |contact|
+            if contact.last_name.downcase.include?(edit_contact)
+              check_edit_name(contact, index)
+              index += 1
+           end
+         end
+       else
+         puts "You did not enter first or last as a choice."
+      end
+    end
+    edit_yml
+  end
+
+  def delete_contact
+    index = 0
+    if contacts.empty?
+      puts "There are no contacts in your address book. \n"
+    else
+     print "Would you like to remove a contact based on first or last name? (first/last) "
+     name_type = gets.chomp.downcase
+     print "What is the name you would like to remove? "
+     name_remove = gets.chomp.downcase
+      case name_type
+      when "first"
+        contacts.each do |contact|
+          if contact.first_name.downcase.include?(name_remove)
+            check_name(contact, index)
+            index += 1
+          end
+        end
+      when "last"
+        contacts.each do |contact|
+          if contact.last_name.downcase.include?(name_remove)
+            check_name(contact, index)
+            index += 1
+          end
+        end
+      else
+        puts "You did not enter first or last as a choice."
+      end
+    end
   end
 
   def check_name(contact, index)
@@ -93,6 +134,39 @@ class AddressBook
         break
      end
    end
+  end
+
+  def check_edit_name(contact, index)
+   puts contact.to_s('last_first')
+   loop do
+   print "Is this the person you would like to edit? (Y/N) "
+   answer = gets.chomp.downcase
+     if (answer == "y" || answer == "n")
+        change_name(answer, contact, index)
+        break
+     end
+   end
+  end
+
+  def change_name(answer, contact, index)
+    case answer
+    when "y"
+      puts " Editing"
+        edit_yml
+    when "n"
+      puts "Keeping"
+    end
+  end
+
+  def edit_yml
+    contacts.each do |edit|
+      print "Change First name: "
+      edit.first_name = gets.chomp
+      print "Change Middle name: "
+      edit.middle_name = gets.chomp
+      print "Change Last name: "
+      edit.last_name = gets.chomp
+    end
   end
 
   def remove_name(answer, contact, index)
@@ -114,6 +188,7 @@ class AddressBook
     contact.middle_name = gets.chomp
     print "Last name: "
     contact.last_name = gets.chomp
+
 
     loop do
       puts "Add phone number or address? "
