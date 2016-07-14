@@ -1,0 +1,38 @@
+---
+- !ruby/object:Contact
+  phone_numbers:
+  - !ruby/object:PhoneNumber
+    kind: Work
+    number: 097865412
+  - !ruby/object:PhoneNumber
+    kind: Home
+    number: '12345677'
+  addresses: []
+  first_name: Nelly
+  middle_name: Jo
+  last_name: Duclos
+- !ruby/object:Contact
+  phone_numbers:
+  - !ruby/object:PhoneNumber
+    kind: Home
+    number: 09786543
+  addresses: []
+  first_name: Lewis
+  middle_name: Cat
+  last_name: Lili
+- !ruby/object:Contact
+  phone_numbers:
+  - !ruby/object:PhoneNumber
+    kind: home
+    number: 098_987_989
+  addresses:
+  - !ruby/object:Address
+    kind: home
+    street_1: 12 Line Twelve
+    street_2: ''
+    city: Nashville
+    state: Tenesse
+    postal_code: '000000'
+  first_name: Nelly
+  middle_name: Jo
+  last_name: Duclos
